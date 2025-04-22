@@ -6,6 +6,8 @@ import os
 import random  
 from auth.authentication import login_signup  
 from auth.db import create_users_table
+import cv2
+import numpy as np
 
 # Initialize login system
 if "logged_in" not in st.session_state:
@@ -33,24 +35,31 @@ with st.container():
             uploaded_file = st.file_uploader("Upload an image...", type=['jpg', 'jpeg', 'png'])
             if uploaded_file is not None:
                 with st.spinner("Detecting available spots..."):
+                    # Read image directly to memory
                     image = Image.open(uploaded_file)
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
-                        image.save(temp_file.name)
-                        results = model(temp_file.name, save=True)
-
-                        output_path = os.path.join(results[0].save_dir, os.path.basename(temp_file.name))
-                        st.image(output_path, caption="Detected", use_container_width=True)
+                    img_array = np.array(image)
+                    
+                    # Perform prediction without saving
+                    results = model.predict(img_array, save=False, imgsz=640)
+                    
+                    # Display results directly
+                    plotted = results[0].plot()  # Get plotted image with boxes
+                    st.image(plotted, caption="Detected", use_column_width=True)
 
         elif option == 'Video':
             uploaded_video = st.file_uploader("Upload a video...", type=['mp4', 'mov', 'avi'])
             if uploaded_video is not None:
                 with st.spinner("Processing video..."):
-                    tfile = tempfile.NamedTemporaryFile(delete=False)
-                    tfile.write(uploaded_video.read())
-
-                    results = model(tfile.name, save=True)
-                    st.video(tfile.name)
-                    st.success("Video processed.")
+                    # Create temporary file
+                    with tempfile.NamedTemporaryFile(delete=True, suffix=".mp4") as tfile:
+                        tfile.write(uploaded_video.read())
+                        
+                        # Video prediction (still needs temporary file)
+                        results = model.predict(tfile.name, save=False, stream=True)
+                        
+                        # Display original video (or process frames similarly to image)
+                        st.video(tfile.name)
+                        st.success("Video processed.")
 
     with col2:
         # Simulated crowd density
