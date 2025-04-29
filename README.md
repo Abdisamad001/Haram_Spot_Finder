@@ -1,5 +1,15 @@
 # HARAM AVAILABLE SPOT DETECTION 
 
+### This project is a Streamlit-based application that uses YOLOv8 object detection to identify available prayer spots from uploaded videos or images.
+
+
+
+
+## Live Demo
+`The application is deployed and accessible at:
+[Haram Available Spot Detection](https://haramspotfinder-ipiw6prgoojecfbthwyhpu.streamlit.app/)`
+
+
 ### 🚀 Installation & Setup
 
 #### 1. Environment Setup
