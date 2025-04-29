@@ -1,3 +1,5 @@
-streamlit
 ultralytics
+opencv-python
+streamlit
 Pillow
+numpy
