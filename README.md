@@ -6,7 +6,7 @@ This is how the overall architecture and design of the system works, illustratin
 
 
 <div align="center">
-  <img src="./asset/System Architecture.png" alt="System Architecture" width="800"/>
+  <img src="./src/System Architecture.png" alt="System Architecture" width="800"/>
 </div>
 
 
