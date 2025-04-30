@@ -4,7 +4,7 @@ This project is a Streamlit-based application that uses YOLOv8 object detection 
 
 This is how the overall architecture and design of the system works, illustrating how user inputs, YOLOv8 detection, database operations, and output visualization are connected in a streamlined workflow.
 
-![System Architecture](./asset/System%20Architecture.svg)
+![System Architecture](./asset/System Architecture.png)
 
 
 
