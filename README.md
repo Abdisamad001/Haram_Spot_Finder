@@ -2,29 +2,39 @@
 
 This project is a Streamlit-based application that uses YOLOv8 object detection to identify available prayer spots from uploaded videos or images.
 
+This is how the overall architecture and design of the system works, illustrating how user inputs, YOLOv8 detection, database operations, and output visualization are connected in a streamlined workflow.
 
+<img src="./asset/System Architecture.svg" alt="System Architecture" width="800"/>
+</div>
 
 
 ## Live Demo
 The application is deployed and accessible at:
-[Haram Available Spot Detection](https://haramspotfinder-ipiw6prgoojecfbthwyhpu.streamlit.app/)
+[Haram Available Spot Detection](https://haramspotfinder-f2ntqrqjzygjc6g9hzhov9.streamlit.app/)
 
 
 ### 🚀 Installation & Setup
 
 #### 1. Environment Setup
-##### `Create conda environment`
-
-`conda create -p venv python==3.8.0 -y`
+##### Create conda environment
+```bash
+conda create -p venv python==3.9.0 -y
+```
 
 ##### ⚡ Activate environment
- `conda activate ./venv`
+```bash
+conda activate ./venv
+```
 
 #### 2. Clone Repository:
 `git clone https://github.com/Abdisamad001/Haram_Spot_Finder.git` 
 
 #### 3. Install Dependencies
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 
-#### 4. Run Application
-`python app.py`
+#### 4. Run Application 
+```bash
+streamlit run app.py
+```
