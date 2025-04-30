@@ -197,3 +197,11 @@ st.markdown(f"""
 
 st.markdown("<div style='margin-top: 2rem;'>Crowd Density Indicator</div>", unsafe_allow_html=True)
 st.progress(crowd_density / 100)
+
+
+st.markdown(f"""
+    <div class='caution'>
+        <h1>🛑 CAUTION</h1>
+        <p>The Map may not guide  you the exact spot, <strong>The feature is under development.</strong></p>
+    </div>
+""", unsafe_allow_html=True)

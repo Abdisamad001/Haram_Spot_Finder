@@ -8,7 +8,7 @@ st.markdown("---")
 if not st.session_state.get("logged_in", False):
     try:
         
-        st.image("thumbnail.png", use_column_width=True)  # Adjust width as needed
+        st.image("src/thumbnail.png", use_column_width=True)  # Adjust width as needed
     except:
         st.error("Image not found.")
 
