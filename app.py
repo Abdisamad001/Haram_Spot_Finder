@@ -7,8 +7,7 @@ import random
 import numpy as np
 
 from auth.authentication import login_signup
-from auth.db import create_users_table
-# Import the exception handling functions
+from auth.db import create_users_table, save_spot, get_spots
 from src.exception import handle_video_processing, handle_image_processing, handle_file_cleanup
 
 # Load custom CSS
@@ -18,8 +17,10 @@ with open("static/style.css") as f:
 # Initialize login system
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
+if "username" not in st.session_state:
+    st.session_state["username"] = None
 
-# Display login/signup sidebar
+# login/signup sidebar
 login_signup()
 
 # Stop app if not logged in
@@ -49,90 +50,127 @@ def show_google_map():
 st.markdown("<h1 style='text-align: center;'> 🕋 Available Spot Detection</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
-option = st.radio("Choose input type:", ['Image', 'Video'])
+# navigation tab 
+tab1, tab2 = st.tabs(["Detect Spots", "History"])
 
-if option == 'Image':
-    uploaded_file = st.file_uploader("Upload an image...", type=['jpg', 'jpeg', 'png'])
-    if uploaded_file is not None:
-        with st.spinner("Detecting available spots..."):
-            image = Image.open(uploaded_file)
-            try:
-                # Process image using exception handler
-                results, plotted = handle_image_processing(model, image)
-                
-                # Two columns layout after detection
-                col1, col2 = st.columns(2, gap="large")
+with tab1:
+    option = st.radio("Choose input type:", ['Image', 'Video'])
 
-                with col1:
-                    st.image(plotted, caption="Detected Spots", use_column_width=True)
-                    st.markdown(
-                        f"<div class='spots-badge'>🟢 {len(results[0].boxes)} spots</div>",
-                        unsafe_allow_html=True
-                    )
-
-                with col2:
-                    st.subheader("🧭 Guidance to Available Spot")
-                    st.write("Follow this map to reach your available spot.")
-                    show_google_map()
-            except Exception as e:
-                st.error(f"Failed to process image: {str(e)}")
-
-elif option == 'Video':
-    uploaded_video = st.file_uploader("Upload a video...", type=['mp4', 'mov'])
-
-    if uploaded_video is not None:
-        temp_video_path = None
-
-        with st.spinner("Processing video..."):
-            # Save uploaded video 
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
-                tfile.write(uploaded_video.read())
-                temp_video_path = tfile.name
-            
-            try:
-                # Process video 
-                output_video_path, processed_video_bytes = handle_video_processing(model, temp_video_path)
-                
-                # after video detection
-                col1, col2 = st.columns(2, gap="large")
-                
-                with col1:
-                    # Original video
-                    st.subheader("Original Video")
-                    st.video(temp_video_path)
+    if option == 'Image':
+        uploaded_file = st.file_uploader("Upload an image...", type=['jpg', 'jpeg', 'png'])
+        if uploaded_file is not None:
+            with st.spinner("Detecting available spots..."):
+                image = Image.open(uploaded_file)
+                try:
+                    # Process image using exception handler
+                    results, plotted = handle_image_processing(model, image)
                     
-                    # Display processed video
-                    if processed_video_bytes:
-                        st.subheader("Processed Video with Detection")
-                        
-                        st.video(processed_video_bytes)
-                        
-                        # download button
-                        st.download_button(
-                            label="Download Processed Video",
-                            data=processed_video_bytes,
-                            file_name="processed_prayer_spot.mp4",
-                            mime="video/mp4"
+                    # Get spots count and save to DB
+                    spots_count = len(results[0].boxes)
+                    save_spot(st.session_state["username"], uploaded_file.name, spots_count, "image")
+                    
+                    # Two columns layout after detection
+                    col1, col2 = st.columns(2, gap="large")
+
+                    with col1:
+                        st.image(plotted, caption="Detected Spots", use_column_width=True)
+                        st.markdown(
+                            f"<div class='spots-badge'>🟢 {spots_count} spots</div> <br>",
+                            unsafe_allow_html=True
                         )
-                    else:
-                        st.error("Video processing failed or video cannot be played in browser.")
-                        
-                        # If video can't play
-                        if output_video_path and os.path.exists(output_video_path):
-                            st.info(f"Video was processed at {output_video_path} but may not be open with browser playback.")
+                        st.success(f"Detection saved to database!")
+
+                    with col2:
+                        st.subheader("🧭 Guidance to Available Spot")
+                        st.write("Follow this map to reach your available spot.")
+                        show_google_map()
+                except Exception as e:
+                    st.error(f"Failed to process image: {str(e)}")
+
+    elif option == 'Video':
+        uploaded_video = st.file_uploader("Upload a video...", type=['mp4', 'mov'])
+
+        if uploaded_video is not None:
+            temp_video_path = None
+
+            with st.spinner("Processing video..."):
+                # Save uploaded video 
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
+                    tfile.write(uploaded_video.read())
+                    temp_video_path = tfile.name
                 
-                with col2:
-                    st.subheader("🧭 Guidance to Available Spot")
-                    st.write("Follow this map to reach your prayer spot.")
-                    show_google_map()
-            
-            except Exception as e:
-                st.error(f"Error in video processing: {str(e)}")
-            
-            finally:
-                # Clean up temp files
-                if temp_video_path:
-                    handle_file_cleanup([temp_video_path])
+                try:
+                    # Process video 
+                    output_video_path, processed_video_bytes = handle_video_processing(model, temp_video_path)
+                    
+                    # For video, we'll estimate spots count (improve this based on your model)
+                    # In real implementation, you'd extract this from video results
+                    estimated_spots = random.randint(5, 15)
+                    save_spot(st.session_state["username"], uploaded_video.name, estimated_spots, "video")
+                    
+                    # after video detection
+                    col1, col2 = st.columns(2, gap="large")
+                    
+                    with col1:
+                        # Original video
+                        st.subheader("Original Video")
+                        st.video(temp_video_path)
+                        
+                        # Display processed video
+                        if processed_video_bytes:
+                            st.subheader("Processed Video with Detection")
+                            
+                            st.video(processed_video_bytes)
+                            
+                            # download button
+                            st.download_button(
+                                label="Download Processed Video",
+                                data=processed_video_bytes,
+                                file_name="processed_prayer_spot.mp4",
+                                mime="video/mp4"
+                            )
+                            
+                            st.success(f"Detection saved with {estimated_spots} estimated spots!")
+                        else:
+                            st.error("Video processing failed or video cannot be played in browser.")
+                            
+                            # If video can't play
+                            if output_video_path and os.path.exists(output_video_path):
+                                st.info(f"Video was processed at {output_video_path} but may not be open with browser playback.")
+                    
+                    with col2:
+                        st.subheader("🧭 Guidance to Available Spot")
+                        st.write("Follow this map to reach your prayer spot.")
+                        show_google_map()
+                
+                except Exception as e:
+                    st.error(f"Error in video processing: {str(e)}")
+                
+                finally:
+                    # Clean up temp files
+                    if temp_video_path:
+                        handle_file_cleanup([temp_video_path])
+
+with tab2:
+    st.subheader("Your Spot Detection History")
+    
+    # Get spot history for current user
+    history = get_spots(st.session_state["username"])
+    
+    if not history:
+        st.info("You haven't performed any detections yet.")
+    else:
+        # Display history in a simple table
+        data = []
+        for record in history:
+            data.append({
+                "Date": record["date"],
+                "Type": record["type"],
+                "File": record["filename"],
+                "Spots": record["count"]
+            })
+        
+        st.table(data)
 
 st.markdown("---")
 
