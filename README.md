@@ -12,10 +12,11 @@ This is how the overall architecture and design of the system works, illustratin
 
 ## Live Demo
 The application is deployed and accessible at:
-[Haram Available Spot Detection](https://haramspotfinder-f2ntqrqjzygjc6g9hzhov9.streamlit.app/)
+[Haram Available Spot Detection Version 2](https://haramspotfinder-jtdjgfnngqvpanhdtjh9ey.streamlit.app/)
+[Haram Available Spot Detection Version 1](https://haramspotfinder-f2ntqrqjzygjc6g9hzhov9.streamlit.app/)
 
 
-### 🚀 Installation & Setup
+### Installation & Setup
 
 #### 1. Environment Setup
 ##### Create conda environment
@@ -23,7 +24,7 @@ The application is deployed and accessible at:
 conda create -p venv python==3.9.0 -y
 ```
 
-##### ⚡ Activate environment
+##### Activate environment
 ```bash
 conda activate ./venv
 ```
@@ -40,3 +41,11 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
+
+#### 5. To Test the infrence 
+
+Go to `data` folder -> `val` --> images 
+
+
+#### Quick Click For DIR
+[Click Here for image DIR](https://github.com/Abdisamad001/Haram_Spot_Finder/tree/main/data/val)
