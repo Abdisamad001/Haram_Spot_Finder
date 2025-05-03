@@ -12,6 +12,7 @@ This is how the overall architecture and design of the system works, illustratin
 
 ## Live Demo
 The application is deployed and accessible at:
+
 [Haram Available Spot Detection Version 2](https://haramspotfinder-jtdjgfnngqvpanhdtjh9ey.streamlit.app/)
 
 [Haram Available Spot Detection Version 1](https://haramspotfinder-f2ntqrqjzygjc6g9hzhov9.streamlit.app/)
