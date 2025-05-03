@@ -44,7 +44,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-#### 5. To Test the infrence 
+#### 5. To Test the inference 
 
 Go to `data` folder -> `val` --> images 
 
