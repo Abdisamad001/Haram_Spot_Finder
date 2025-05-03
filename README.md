@@ -2,6 +2,13 @@
 
 This project is a Streamlit-based application that uses YOLOv8 object detection to identify available prayer spots from uploaded videos or images.
 
+The model achieves exceptional detection accuracy for available prayer spots. The training metrics below demonstrate stable convergence with final performance metrics of 0.977 precision, 0.97 recall, and mAP@0.5 of 0.977.
+
+<div align="center">
+  <img src="./runs/train/results.png" alt="Model Training Performance" width="800"/>
+</div>
+
+
 This is how the overall architecture and design of the system works, illustrating how user inputs, YOLOv8 detection, database operations, and output visualization are connected in a streamlined workflow.
 
 
