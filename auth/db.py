@@ -38,7 +38,7 @@ def create_users_table():
             except sqlite3.OperationalError:
                 pass
     else:
-        # Create sers table
+        # Create users table
         c.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -321,7 +321,7 @@ def authenticate_user(username, password):
     return {'id': user_id, 'username': username, 'user_type': 'user'}
 
 
-# Original functions
+# Save Spot Function
 def save_spot(username, filename, count, type_):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
